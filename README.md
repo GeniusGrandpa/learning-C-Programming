@@ -25,5 +25,6 @@ int main(void)
 ````
 ## Main Components
 
-- include <stdio.h> : Includes the Standard Input/Output library, which provides function such as printf().
-
+-  `#include <stdio.h>`: Includes the Standard Input/Output library, which provides function such as printf().
+- `int main(void)` : Defines the program's entry point.
+- {
