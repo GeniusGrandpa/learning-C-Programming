@@ -1,4 +1,4 @@
-# This includes a C program for input and output.
+# This includes a simple C program for input and output.
 
 ### About
 
