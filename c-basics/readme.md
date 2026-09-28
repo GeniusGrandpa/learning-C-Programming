@@ -219,30 +219,269 @@ This program demonstrates:
 - The address-of operator `&`
     
 - Returning a status from `main()`
-    
 
-## Compilation
+### Compilation
 
-The program can be saved as:
+The C source code goes through several stages before becoming an executable program.
+
+The basic compilation pipeline is:
 
 ```text
 main.c
-```
+  |
+  | Preprocessing (-E)
+  v
+main.i
+  |
+  | Compilation (-S)
+  v
+main.s
+  |
+  | Assembly (-c)
+  v
+main.o
+  |
+  | Linking
+  v
+main
+````
 
-Compile it using GCC:
+### 1. Preprocessing
+
+The first stage is preprocessing.
+
+Use the `-E` option:
 
 ```bash
-gcc main.c -o main
+gcc -E main.c -o main.i
 ```
 
-### Run on Linux/macOS
+This processes preprocessor directives such as:
+
+```c
+#include <stdio.h>
+```
+
+The result is a preprocessed C file:
+
+```text
+main.i
+```
+
+### 2. Compilation to Assembly
+
+The next stage converts the preprocessed C code into **assembly language**.
+
+Use the `-S` option:
+
+```bash
+gcc -S main.c -o main.s
+```
+
+This produces:
+
+```text
+main.s
+```
+
+The `.s` file contains assembly instructions for the target architecture.
+
+The important point is:
+
+```text
+C Source Code
+      |
+      v
+Assembly Language
+```
+
+For example, instead of C code such as:
+
+```c
+int number;
+```
+
+the generated assembly contains architecture-specific instructions.
+
+The exact assembly output depends on the processor architecture and compiler.
+
+
+### 3. Assembly
+
+The assembly language is then converted into machine-code object code.
+
+Use the `-c` option:
+
+```bash
+gcc -c main.s -o main.o
+```
+
+This produces:
+
+```text
+main.o
+```
+
+The `.o` file is an object file containing machine code and other information needed for linking.
+
+You can also let GCC perform the compilation and assembly stages together:
+
+```bash
+gcc -c main.c -o main.o
+```
+
+### 4. Linking
+
+The final stage is linking.
+
+The object file is linked to produce the executable:
+
+```bash
+gcc main.o -o main
+```
+
+This creates:
+
+```text
+main
+```
+
+The linker resolves references to functions and connects the program with the required libraries.
+
+For example, the program uses:
+
+```c
+printf()
+```
+
+which is provided through the standard C library.
+
+
+### 5. Running the Executable
+
+After linking, the executable can be run.
+
+On Linux/macOS:
 
 ```bash
 ./main
 ```
 
-### Run on Windows
+On Windows:
 
 ```bash
 main.exe
+```
+
+For the example program, the user can enter:
+
+```text
+enter a number: 42
+```
+
+and the program produces:
+
+```text
+You entered: 42
+```
+
+
+## Complete GCC Process
+
+The complete process can be performed manually:
+
+```bash
+gcc -E main.c -o main.i
+gcc -S main.i -o main.s
+gcc -c main.s -o main.o
+gcc main.o -o main
+```
+
+This produces:
+
+```text
+main.c
+  |
+  | gcc -E
+  v
+main.i
+  |
+  | gcc -S
+  v
+main.s
+  |
+  | gcc -c
+  v
+main.o
+  |
+  | gcc
+  v
+main
+  |
+  | ./main
+  v
+Process
+```
+
+There is also a simpler way. GCC can perform all the necessary stages automatically:
+
+```bash
+gcc main.c -o main
+```
+
+The stages are still performed internally:
+
+```text
+Preprocessing
+      |
+      v
+Compilation
+      |
+      v
+Assembly
+      |
+      v
+Linking
+      |
+      v
+Executable
+```
+
+### GCC Options Used
+
+|Option|Purpose|
+|---|---|
+|`-E`|Preprocess the source code|
+|`-S`|Compile the source code into assembly|
+|`-c`|Assemble into an object file without linking|
+|`-o`|Specify the output filename|
+
+### Final Compilation Pipeline
+
+```text
+                  main.c
+                    |
+                    | -E
+                    v
+              Preprocessed Code
+                 main.i
+                    |
+                    | -S
+                    v
+             Assembly Language
+                 main.s
+                    |
+                    | -c
+                    v
+               Object Code
+                 main.o
+                    |
+                    | Link
+                    v
+                Executable
+                  main
+                    |
+                    | Run
+                    v
+                 Process
 ```
